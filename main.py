@@ -35,10 +35,18 @@ payload = {
 
 # 请求AI，关闭SSL校验
 resp = requests.post(url, headers=headers, json=payload, timeout=120, verify=False)
-res_data = resp.json()
-ai_result = res_data["choices"][0]["message"]["content"]
-print("\n====AI分析结果====\n")
-print(ai_result)
+print(f"HTTP状态码: {resp.status_code}")
+print(f"接口原始返回内容:\n{resp.text}")
+
+# 增加判断，防止空内容报错
+if resp.status_code == 200 and resp.text.strip():
+    res_data = resp.json()
+    ai_result = res_data["choices"][0]["message"]["content"]
+    print("\n====AI分析结果====\n")
+    print(ai_result)
+else:
+    ai_result = f"调用安思派接口失败，状态码：{resp.status_code}，返回：{resp.text}"
+    print(ai_result)
 
 # ==========发送邮件部分==========
 if mail_sender and mail_pass and mail_receiver:
