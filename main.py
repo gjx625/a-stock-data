@@ -2,6 +2,8 @@ import os
 import requests
 import smtplib
 from email.mime.text import MIMEText
+import warnings
+warnings.filterwarnings('ignore')
 
 # 读取环境变量
 api_key = os.getenv("ANSPIRE_API_KEY")
@@ -31,8 +33,8 @@ payload = {
     "messages": [{"role": "user", "content": prompt}]
 }
 
-# 请求AI
-resp = requests.post(url, headers=headers, json=payload, timeout=120)
+# 请求AI，关闭SSL校验
+resp = requests.post(url, headers=headers, json=payload, timeout=120, verify=False)
 res_data = resp.json()
 ai_result = res_data["choices"][0]["message"]["content"]
 print("\n====AI分析结果====\n")
